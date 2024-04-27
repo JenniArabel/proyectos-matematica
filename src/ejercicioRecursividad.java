@@ -6,30 +6,30 @@ import java.util.Scanner;
 public class ejercicioRecursividad {
 
     //Función para verificar si un número es primo
-    public static boolean esPrimo (int num) {
-        if (num <= 1) {
-            return false;
+    public static boolean esPrimo (int num, int divisor) {
+        if (divisor == 1) {
+            return true; //Caso base: el número es primo si no tiene divisores diferentes de 1
         }
-        for (int i = 2; i <= Math.sqrt(num); i++) {
-            if (num % i == 0) {
-                return false;
-            }
+        if (num % divisor == 0) {
+            return false; //El número no es primo si es divisible por un número diferente de 1 y por sí mismo
         }
-        return true;
+        return esPrimo(num, divisor - 1); //Llamada recursiva con un divisor más pequeño
     }
 
 
     //Función para generar los primeros 'n' números primos
-    public static ArrayList<Integer> generarPrimos (int n) {
+    public static ArrayList<Integer> generarPrimos (int n, int num) {
         ArrayList<Integer> primos = new ArrayList<>();
 
-        int num = 2; //Empezamos desde el primer número primo
+        if (n == 0) {
+            return primos; //Caso base: no se generan más número primos
+        }
 
-        while (primos.size() < n) {
-            if (esPrimo(num)) {
-                primos.add(num);
-            }
-            num++;
+        if (esPrimo(num, num / 2)) {
+            primos.add(num); //Agregar número primo a la lista
+            primos.addAll(generarPrimos(n - 1, num + 1)); //Llamada recursiva con el siguiente número
+        } else {
+            primos.addAll(generarPrimos(n, num + 1)); //Llamada recursiva con el siguiente número
         }
         return primos;
     }
@@ -68,7 +68,7 @@ public class ejercicioRecursividad {
         int n = scanner.nextInt();
 
         //Generar la sucesión de números primos
-        ArrayList<Integer> primos = generarPrimos(n);
+        ArrayList<Integer> primos = generarPrimos(n, 2);
 
         //Mostrar la sucesión de izquierda a derecha
         mostrarSucesionIzquierda(primos);
